@@ -12,7 +12,7 @@ const db = require('./config/db');
 
 // Enable CORS
 app.use(cors({
-    origin: ['https://chat-app-kappa-sand-60.vercel.app/','http://localhost:5173'],
+    origin: ['https://chat-app-kappa-sand-60.vercel.app','http://localhost:5173'],
     credentials: true
 }));
 
