@@ -10,7 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import OpenRoute from "./components/OpenRoute";
 
 import { connectSocket, disconnectSocket } from "./services/socketService";
-import { setOnlineUsers, setUserTyping, addMessage } from "./features/slices/messageSlice";
+import { setOnlineUsers, setUserTyping, addMessage, updateUserInList } from "./features/slices/messageSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -37,11 +37,17 @@ function App() {
         dispatch(setUserTyping({ userId, isTyping }));
       });
 
+      // Listen for user details/avatar updates
+      socket.on("userUpdated", (updatedUser) => {
+        dispatch(updateUserInList(updatedUser));
+      });
+
       // Cleanup listeners and disconnect socket on logout/unmount
       return () => {
         socket.off("getOnlineUsers");
         socket.off("newMessage");
         socket.off("userTyping");
+        socket.off("userUpdated");
         disconnectSocket();
       };
     } else {

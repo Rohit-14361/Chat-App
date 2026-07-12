@@ -2,6 +2,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const imageUploader = require("../utils/imageUploader");
+const { io } = require("../config/socket");
 
 
 exports.health=async(req,res)=>{
@@ -185,6 +186,11 @@ exports.updateProfile = async (req, res) => {
       { profilePic: image.secure_url },
       { new: true }
     ).select("-password");
+
+    // Broadcast profile update to all connected clients
+    if (io) {
+      io.emit("userUpdated", user);
+    }
 
     return res.status(200).json({
       success: true,

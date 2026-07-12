@@ -48,6 +48,15 @@ export const messageSlice = createSlice({
       const { userId, isTyping } = action.payload;
       state.typingUsers[userId] = isTyping;
     },
+    updateUserInList: (state, action) => {
+      const updatedUser = action.payload;
+      state.users = state.users.map((u) =>
+        u._id === updatedUser._id ? { ...u, ...updatedUser } : u
+      );
+      if (state.selectedUser && state.selectedUser._id === updatedUser._id) {
+        state.selectedUser = { ...state.selectedUser, ...updatedUser };
+      }
+    },
   },
 });
 
@@ -59,6 +68,7 @@ export const {
   setOnlineUsers,
   setTypingUsers,
   setUserTyping,
+  updateUserInList,
 } = messageSlice.actions;
 
 export default messageSlice.reducer;
