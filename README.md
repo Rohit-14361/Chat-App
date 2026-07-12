@@ -82,6 +82,30 @@ Copy the environment template files (`.env.example`) to `.env` in their respecti
 
 ---
 
+## API Reference
+
+The backend exposes the following REST API endpoints. For authenticated endpoints, the authorization token is parsed from either the `token` cookie or the `Authorization: Bearer <token>` header.
+
+### User Authentication & Profile (`/api/v1`)
+
+| Method | Endpoint | Auth Required | Description | Payload Format |
+| :--- | :--- | :--- | :--- | :--- |
+| **POST** | `/signup` | No | Registers a new user, hashes the password, and returns a session cookie / JWT token. | `{ "name": "...", "email": "...", "password": "..." }` |
+| **POST** | `/login` | No | Validates credentials and returns a session cookie / JWT token. | `{ "email": "...", "password": "..." }` |
+| **POST** | `/logout` | No | Clears the session cookie to log the user out. | None |
+| **PUT** | `/update-profile` | Yes | Uploads a profile photo to Cloudinary and updates user details. | Multipart Form-Data: `profileImage` (File) |
+| **GET** | `/health` | No | Health check endpoint to verify backend status. | None |
+
+### Messages & Directory (`/api/v2`)
+
+| Method | Endpoint | Auth Required | Description | Payload Format |
+| :--- | :--- | :--- | :--- | :--- |
+| **GET** | `/get-users/sidebar` | Yes | Retrieves all registered users except the logged-in user. | None |
+| **GET** | `/get-message/:id` | Yes | Fetches chat history between the logged-in user and the user specified by `:id`. | Path Parameter: `id` |
+| **POST** | `/send/:id` | Yes | Sends a text and/or image message to the user specified by `:id`. Also triggers a real-time socket emit. | Path Parameter: `id`<br>Multipart Form-Data: `text` (String, optional), `image` (File, optional) |
+
+---
+
 ## Setup & Running Instructions
 
 ### Prerequisites
@@ -94,34 +118,39 @@ Ensure your local MongoDB database service is running:
 - **Windows**: Run `net start MongoDB` or verify the MongoDB server service is active in Services.
 - **macOS/Linux**: `brew services start mongodb-community` or `sudo systemctl start mongod`.
 
-### 2. Run the Backend Server
+### 2. Install Dependencies
 
-1. Open a terminal and navigate to the `backend/` directory:
+Install all dependencies for both the frontend and backend projects from the root directory:
+```bash
+npm run install:all
+```
+
+### 3. Start the Application
+
+You can start the application with a single command running concurrently, or run them individually in separate terminal sessions.
+
+#### Option A: Start Frontend & Backend Concurrently (Recommended)
+
+From the root directory, run:
+```bash
+npm run dev
+```
+*This starts both the backend on [http://localhost:3000](http://localhost:3000) and the frontend client on [http://localhost:5173](http://localhost:5173) in a single shell.*
+
+#### Option B: Start Services Individually
+
+If you prefer to run them in separate terminal windows:
+
+1. **Run Backend Server**:
    ```bash
    cd backend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server using nodemon:
-   ```bash
    npm run dev
    ```
    *The backend will run on [http://localhost:3000](http://localhost:3000).*
 
-### 3. Run the Frontend Client
-
-1. Open a new terminal and navigate to the `frontend/` directory:
+2. **Run Frontend Client**:
    ```bash
    cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the Vite development server:
-   ```bash
    npm run dev
    ```
    *The client will spin up on [http://localhost:5173](http://localhost:5173).*
