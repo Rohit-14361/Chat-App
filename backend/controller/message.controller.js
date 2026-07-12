@@ -1,4 +1,4 @@
-const { io, getReceiverSocketId } = require("../config/socket");
+const { io, getReceiverSocketIds } = require("../config/socket");
 const Message = require("../models/message.model");
 const User = require("../models/user.model");
 const imageUploader = require("../utils/imageUploader");
@@ -85,10 +85,10 @@ exports.sendMessage = async (req, res) => {
     });
 
     // Realtime communication using socket.io
-    const receiverSocketId = getReceiverSocketId(recieverId);
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", newMessage);
-    }
+    const receiverSocketIds = getReceiverSocketIds(recieverId);
+    receiverSocketIds.forEach((socketId) => {
+      io.to(socketId).emit("newMessage", newMessage);
+    });
 
     return res.status(201).json({
       success: true,

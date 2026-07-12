@@ -11,7 +11,7 @@ export const connectSocket = (userId) => {
   if (!socket) {
     socket = io(backendUrl, {
       query: { userId },
-      transports: ["websocket"], 
+      transports: ["polling", "websocket"], 
     });
     console.log("Socket connected for user:", userId);
   }

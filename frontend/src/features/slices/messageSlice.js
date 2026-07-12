@@ -19,14 +19,24 @@ export const messageSlice = createSlice({
       state.messages = action.payload;
     },
     addMessage: (state, action) => {
-      // Avoid duplicate messages if socket fires twice or overlaps with fetch
-      const exists = state.messages.some((msg) => msg._id === action.payload._id);
-      if (!exists) {
-        state.messages.push(action.payload);
+      const message = action.payload;
+      if (!state.selectedUser) return;
+
+      // Only append if the message belongs to the current conversation
+      const isFromSelectedUser = message.senderId === state.selectedUser._id;
+      const isToSelectedUser = message.recieverId === state.selectedUser._id;
+
+      if (isFromSelectedUser || isToSelectedUser) {
+        // Avoid duplicate messages if socket fires twice or overlaps with fetch
+        const exists = state.messages.some((msg) => msg._id === message._id);
+        if (!exists) {
+          state.messages.push(message);
+        }
       }
     },
     setSelectedUser: (state, action) => {
       state.selectedUser = action.payload;
+      state.messages = []; // Clear messages immediately when switching users to avoid stale UI bleed
     },
     setOnlineUsers: (state, action) => {
       state.onlineUsers = action.payload;
