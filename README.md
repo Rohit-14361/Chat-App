@@ -2,6 +2,8 @@
 
 A high-performance, premium-designed real-time chat application built using **React** for the frontend, and **Node.js + Express + Socket.io** for the backend, with data persistence managed via **MongoDB** and media uploads processed through **Cloudinary**.
 
+**Live Demo URL**: [https://chat-app-kappa-sand-60.vercel.app/](https://chat-app-kappa-sand-60.vercel.app/)
+
 ---
 
 ## Features
