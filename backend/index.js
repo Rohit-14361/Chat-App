@@ -12,7 +12,7 @@ const db = require('./config/db');
 
 // Enable CORS
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['https://chat-app-kappa-sand-60.vercel.app/','http://localhost:5173']
     credentials: true
 }));
 
@@ -41,4 +41,4 @@ db();
 
 server.listen(PORT,()=>{
     console.log(`Server is listening to the PORT ${PORT}`);
-});
+});
